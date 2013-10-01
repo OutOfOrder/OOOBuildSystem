@@ -1,0 +1,14 @@
+Code
+Engine15
+3rdParty/binreloc
+3rdParty/fmod_linux
+3rdParty/glew
+3rdParty/lidgren-network-gen3_c++
+3rdParty/lodepng
+3rdParty/rapidxml-1.13
+3rdParty/SDL2
+3rdParty/SFMT
+3rdParty/steamworks
+3rdParty/TinyXML
+3rdParty/TinyXPath
+

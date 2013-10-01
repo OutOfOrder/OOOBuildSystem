@@ -1,0 +1,31 @@
+#!/bin/sh
+
+SETUPDIR="$1"
+
+if [ -z "$SETUPDIR" ]; then
+    echo "Usage $0 Application.mojo"
+    exit 1
+fi
+
+MOJO_DIR=`dirname $0`
+MOJO_BINDIR=$MOJO_DIR
+MOJO_OUTPUT="$2"
+if [ -z "$MOJO_OUTPUT" ]; then
+    MOJO_OUTPUT=./setup.sh
+fi
+
+if [ -f install.zip ]; then
+    read -n1 -p "Delete existing install.zip?(Y/N)"
+    echo
+    if [ "$REPLY" == "Y" -o "$REPLY" == "y" ]; then
+        rm -f install.zip
+    else
+        echo "Delete or move install.zip before running again"
+        exit 1
+    fi
+fi
+
+(cd $SETUPDIR; zip -9r ../install.zip *)
+
+cp $MOJO_DIR/mojosetup.sh $MOJO_OUTPUT
+$MOJO_BINDIR/make_self_extracting $MOJO_OUTPUT install.zip
