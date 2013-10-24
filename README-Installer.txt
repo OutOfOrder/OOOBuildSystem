@@ -6,7 +6,7 @@ I'm using MojoSetup for the linux installer.. The installer binaries themselves 
 Copying Files
 --------------
 
-Game data files go into the GameName.mojo/data/data folder..  this includes the Game content folders from the Mac asset build, project.ini, etc.. steam_appid.txt (for now as we are distruting a "Steam build")..  and the Monoaco.png in the Code/Main/Projects/ folder.
+Game data files go into the GameName.mojo/data/noarch folder..  this includes the Game content folders from the Mac asset build, project.ini, etc.. steam_appid.txt (for now as we are distruting a "Steam build")..  and the Monoaco.png in the Code/Main/Projects/ folder.
 
 The binaries and libraries go into the GameName.mojo/data/x86 or GameName.mojo/data/x86_64 depending on the architecture..  the structure is as follows..  (Libraries can be found in the 3rdParty folders)
 
@@ -15,7 +15,7 @@ x86/
   lib/libSDL2-2.0.so.0
   lib/libsteam_api.so
 
-the SDL2 lib needs to be the full SO with that name (e.g. libSDL2-2.0.so.0.0.0 renamed to libSDL2.2.0.so.0)  this is so we don't have to fiddle with symlinks (which mojo handles perfectly..)
+the SDL2 lib needs to be the full SO with that name (e.g. libSDL2-2.0.so.0.0.0 renamed to libSDL2.2.0.so.0)  this is so we don't have to fiddle with symlinks (although mojo handles it perfectly..)
 
 x86_64/
   GameName.bin.x86

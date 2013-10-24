@@ -35,7 +35,7 @@ Setup.Package
     Setup.Readme
     {
         description = _("Readme"),
-        source = _("data/README.linux")
+        source = _("noarch/README.linux")
     },
 
     Setup.Option
@@ -113,9 +113,9 @@ Setup.Package
 
         Setup.File
         {
-            wildcards = "data/*";
+            wildcards = "noarch/*";
             filter = function(fn)
-                return string.gsub(fn, "^data/", "", 1), nil
+                return string.gsub(fn, "^noarch/", "", 1), nil
             end
         },
     }
