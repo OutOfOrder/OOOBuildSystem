@@ -62,7 +62,7 @@ Finish: lock buildroot
 Building the code
 =================
 
-You can either build the code in the chroot manually by running "make" in the build-game or build-setup directories. 
+You can either build the code in the chroot manually by running "make" in the build directories. 
 (use -j# to speed up the build by doing simultaneous compiles.. e.g.  make -j4)
 
 To more automate the build process I have included a "build-linux.sh" script that will build the game and extract out the binaries for you into the Release folder.
