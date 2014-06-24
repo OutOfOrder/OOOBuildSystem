@@ -35,7 +35,7 @@ Preparing for building the code
 
 The initial setup of building the code is to setup the build dirs via cmake so we must shell into the chroot.
 
-./mock-shell 32
+./mock-shell.sh 32
 
 then we go into the synced code directory
 
