@@ -10,10 +10,6 @@ fi
 
 shift 1
 
-echo "Syncing code in 2 seconds"
-sleep 2
-./mock-sync.sh $arch
-
 if [ "$arch" = "32" ]; then
     suffix="x86"
 else
@@ -37,6 +33,16 @@ else
 fi
 
 root=`mock -r $ROOT --print-root-path`/builddir
+
+if [ ! -d "$root" ]; then
+    echo "mock root not prepared."
+    echo "Please run ./mock-prep.sh $arch init"
+    exit 1
+fi
+
+echo "Syncing code in 2 seconds"
+sleep 2
+./mock-sync.sh $arch
 
 cat > $root/$dst_root/build.sh <<EOSCRIPT
 cd /builddir/$dst_root
