@@ -18,11 +18,13 @@ else
 fi
 
 if [ $arch = "32" ]; then
-ROOT=$ROOT32
-EXTRA=$EXTRA32
+    ROOT=$ROOT32
+    EXTRA=$EXTRA32
+    arch_tag=i686
 elif [ $arch = "64" ]; then
-ROOT=$ROOT64
-EXTRA=$EXTRA64
+    ROOT=$ROOT64
+    EXTRA=$EXTRA64
+    arch_tag=x86_64
 else
     echo "Pick a correct sync arch (32 or 64)"
     exit
@@ -40,7 +42,8 @@ mock -r $ROOT --install ccache dos2unix \
     libXi-devel libXext-devel libXft-devel \
     alsa-lib-devel freeglut-devel \
     libtiff-devel curl-devel \
-    pulseaudio-libs-devel freetype-devel cmake28 $EXTRA \
+    pulseaudio-libs-devel freetype-devel cmake $EXTRA \
     libpng-devel libjpeg-devel zlib-devel fltk \
     vim-enhanced libXinerama-devel libXpm-devel \
+    libuuid-devel \
     $*

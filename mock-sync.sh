@@ -51,16 +51,31 @@ fi
 
 if [ -e $dir/mock-sync.txt ]; then
     pushd $src_root
-    srcpaths=`cat $dir/mock-sync.txt`
-    for srcpath in $srcpaths; do
-        if [ -d $srcpath ]; then
+
+    while read srcpath; do
+        if [ -z "$srcpath" ] || [[ "$srcpath" == \#* ]]; then
+            continue
+        fi
+        if [[ $srcpath == *\** ]]; then
+            realsrcpath=${srcpath%/*}
+            wildcard=${srcpath##*/}
+            srcpath=${realsrcpath}
+        else
+            wildcard=""
+        fi
+        if [ ! -z "$wildcard" ]; then
+            mkdir -p $root/$dst_root/$srcpath/
+            rsync -av  --delete-after $srcpath/$wildcard $root/$dst_root/$srcpath/ $rsync_args
+            exit
+        elif [ -d $srcpath ]; then
             mkdir -p $root/$dst_root/$srcpath/ 
             rsync -a  --delete-after $srcpath/ $root/$dst_root/$srcpath/ $rsync_args
         else
-            mkdir -p `dirname $root/$dst_root/$srcpath `
+            mkdir -p `dirname $root/$dst_root/$srcpath`
             rsync -a  --delete-after $srcpath $root/$dst_root/$srcpath $rsync_args
         fi
-    done
+    done < "$dir/mock-sync.txt"
+
     popd
 fi
 
