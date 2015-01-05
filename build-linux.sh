@@ -41,6 +41,13 @@ if [ ! -d "$root" ]; then
     exit 3
 fi
 
+CPU_COUNT=1
+if type nproc 2>&1 > /dev/null; then
+    CPU_COUNT=`nproc`
+    CPU_COUNT=$(( ${CPU_COUNT} - 1 ))
+    echo "Building using $CPU_COUNT simultaneous jobs"
+fi
+
 build_clean=""
 build_type=""
 
@@ -80,7 +87,7 @@ cd /builddir/$dst_root
 mkdir -p build
 cd build
     cmake $cmake_path -DCMAKE_BUILD_TYPE=$build_type $cmake_options
-    make -j4 $build_clean all
+    make -j$CPU_COUNT $build_clean all
 cd ..
 EOSCRIPT
 

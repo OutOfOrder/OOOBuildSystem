@@ -66,7 +66,6 @@ if [ -e $dir/mock-sync.txt ]; then
         if [ ! -z "$wildcard" ]; then
             mkdir -p $root/$dst_root/$srcpath/
             rsync -av  --delete-after $srcpath/$wildcard $root/$dst_root/$srcpath/ $rsync_args
-            exit
         elif [ -d $srcpath ]; then
             mkdir -p $root/$dst_root/$srcpath/ 
             rsync -a  --delete-after $srcpath/ $root/$dst_root/$srcpath/ $rsync_args
