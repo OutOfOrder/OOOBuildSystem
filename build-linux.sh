@@ -50,23 +50,33 @@ fi
 
 build_clean=""
 build_type=""
+builddir_suffix=""
+finaldir_suffix=""
+build_opts=""
 
 while [ ! -z "$1" ]; do
     case "$1" in
         clean)
         build_clean="clean"
         ;;
-        debug)
+        [Dd]ebug)
         build_type="Debug"
         echo "Setting build type to Debug"
         ;;
-        release)
+        [Rr]elease)
         build_type="Release"
         echo "Setting build type to Release"
         ;;
-        reldebug)
+        [Rr]el[Dd]ebug)
         build_type="RelWithDebInfo"
         echo "Setting build type to RelWithDebInfo"
+        ;;
+        steam)
+        build_steam=1
+        builddir_suffix=-steam
+        finaldir_suffix=Steam
+        build_opts=$cmake_steam_options
+        echo "Enabling steam build"
         ;;
     esac
     shift
@@ -84,9 +94,9 @@ sleep 2
 cat > $root/$dst_root/build.sh <<EOSCRIPT
 cd /builddir/$dst_root
 
-mkdir -p build
-cd build
-    cmake $cmake_path -DCMAKE_BUILD_TYPE=$build_type $cmake_options
+mkdir -p build$builddir_suffix
+cd build$builddir_suffix
+    cmake $cmake_path -DCMAKE_BUILD_TYPE=$build_type $cmake_options $build_opts
     make -j$CPU_COUNT $build_clean all
 cd ..
 EOSCRIPT
@@ -94,8 +104,13 @@ EOSCRIPT
 echo "Starting build in 2 seconds"
 sleep 2
 
-./mock-shell.sh $arch -- "cd builddir/$dst_root; bash ./build.sh;"
+./mock-shell.sh $arch -- "bash /builddir/$dst_root/build.sh"
 
-mkdir -p ./Release/
-cp $root/$dst_root/build/*.bin.$suffix ./Release/
-cp -a $root/$dst_root/build/$libroot ./Release/
+if [ -z "$final_dest" ]; then
+    final_dest=.
+fi
+mkdir -p $final_dest/$build_type$finaldir_suffix/
+
+cp $root/$dst_root/build$builddir_suffix/*.bin.$suffix $final_dest/$build_type$finaldir_suffix/
+cp -a $root/$dst_root/build$builddir_suffix/$libroot $final_dest/$build_type$finaldir_suffix/
+

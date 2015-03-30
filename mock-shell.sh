@@ -21,4 +21,4 @@ else
 ROOT=$ROOT64
 fi
 
-mock -r $ROOT --unpriv --shell $*
+mock -r $ROOT --unpriv --shell "$@"
