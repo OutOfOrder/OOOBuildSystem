@@ -1,12 +1,10 @@
-if [ `hostname` = "LinuxBoxen.kaos.realm" ]; then
-    ROOT32=humblebuild-i386
-    ROOT64=humblebuild-x86_64
-else
-    ROOT32=epel-6-i386
-    ROOT64=epel-6-x86_64
-fi
-parent=../
-cmake_path=../Code/Main/Projects
-cmake_options="-DWITH_STEAM=ON"
-dst_root=GameName
+ROOT=epel-7-x86_64
+
+parent=../../../
+cmake_path=../
+cmake_options=""
+cmake_options32="-DFORCE32=ON"
+cmake_steam_options="-DUSE_STEAM=ON"
+cmake_build_system=Ninja
+dst_root=MyGameName
 

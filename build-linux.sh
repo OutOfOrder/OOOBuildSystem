@@ -5,7 +5,7 @@ arch=$1
 shift
 
 if [ -z "$arch" ]; then
-    echo "Specify if 32 or 64 arch sync"
+    echo "Specify if 32 or 64 arch"
     exit 1
 fi
 
@@ -17,6 +17,8 @@ else
     libroot="lib64"
 fi
 
+cmake_build_system="Unix Makefiles"
+
 if [ -r ./mock-config.txt ]; then
     . ./mock-config.txt
 else
@@ -25,11 +27,11 @@ else
 fi
 
 if [ $arch -eq 32 ]; then
-    ROOT=$ROOT32
+    arch_options=$cmake_options32
 elif [ $arch -eq 64 ]; then
-    ROOT=$ROOT64
+    arch_options=$cmake_options64
 else
-    echo "Pick a correct sync arch (32 or 64)"
+    echo "Pick a correct arch (32 or 64)"
     exit 2
 fi
 
@@ -57,7 +59,7 @@ build_opts=""
 while [ ! -z "$1" ]; do
     case "$1" in
         clean)
-        build_clean="clean"
+        build_clean="--clean-first"
         ;;
         [Dd]ebug)
         build_type="Debug"
@@ -89,28 +91,31 @@ fi
 
 echo "Syncing code in 2 seconds"
 sleep 2
-./mock-sync.sh $arch
+./mock-sync.sh
+
+build_dir=build-$build_type-$arch$builddir_suffix
 
 cat > $root/$dst_root/build.sh <<EOSCRIPT
+#!/bin/sh
 cd /builddir/$dst_root
 
-mkdir -p build$builddir_suffix
-cd build$builddir_suffix
-    cmake $cmake_path -DCMAKE_BUILD_TYPE=$build_type $cmake_options $build_opts
-    make -j$CPU_COUNT $build_clean all
+mkdir -p $build_dir
+cd $build_dir
+    cmake -G$cmake_build_system $cmake_path -DCMAKE_BUILD_TYPE=$build_type $cmake_options $build_opts $arch_options
+    cmake --build . $build_clean -- -j$CPU_COUNT
 cd ..
 EOSCRIPT
 
 echo "Starting build in 2 seconds"
 sleep 2
 
-./mock-shell.sh $arch -- "bash /builddir/$dst_root/build.sh"
+./mock-shell.sh -- "bash /builddir/$dst_root/build.sh"
 
 if [ -z "$final_dest" ]; then
     final_dest=.
 fi
 mkdir -p $final_dest/$build_type$finaldir_suffix/
 
-cp $root/$dst_root/build$builddir_suffix/*.bin.$suffix $final_dest/$build_type$finaldir_suffix/
-cp -a $root/$dst_root/build$builddir_suffix/$libroot $final_dest/$build_type$finaldir_suffix/
+cp $root/$dst_root/$build_dir/*.bin.$suffix $final_dest/$build_type$finaldir_suffix/
+cp -a $root/$dst_root/$build_dir/$libroot $final_dest/$build_type$finaldir_suffix/
 

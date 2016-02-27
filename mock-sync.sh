@@ -1,14 +1,6 @@
 #!/bin/bash
 
 dir=$PWD
-arch=$1
-
-if [ -z "$arch" ]; then
-    echo "Specify if 32 or 64 arch sync"
-    exit 1
-fi
-
-shift 1
 
 if [ "$1" = "-n" ]; then
     rsync_args=-vvn
@@ -31,15 +23,6 @@ if [ ! -z "$parent" ]; then
     src_root=$dir/$parent
 else
     src_root=$dir
-fi
-
-if [ $arch -eq 32 ]; then
-    ROOT=$ROOT32
-elif [ $arch -eq 64 ]; then
-    ROOT=$ROOT64
-else
-    echo "Pick a correct sync arch (32 or 64)"
-    exit 1
 fi
 
 root=`mock -r $ROOT --print-root-path`/builddir

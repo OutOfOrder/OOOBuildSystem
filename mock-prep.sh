@@ -1,12 +1,5 @@
 #!/bin/bash
 
-arch=$1
-shift
-if [ -z "$arch" ]; then
-	echo "Specify if 32 or 64 arch sync"
-	exit 1
-fi
-
 PREFIX=`dirname "$0"`
 
 if [ -r ./mock-config.txt ]; then
@@ -17,33 +10,23 @@ else
     exit 1
 fi
 
-if [ $arch = "32" ]; then
-    ROOT=$ROOT32
-    EXTRA=$EXTRA32
-    arch_tag=i686
-elif [ $arch = "64" ]; then
-    ROOT=$ROOT64
-    EXTRA=$EXTRA64
-    arch_tag=x86_64
-else
-    echo "Pick a correct sync arch (32 or 64)"
-    exit
-fi
-
-
 if [ "$1" == "init" ]; then
     mock -r $ROOT --init
     shift
 fi
 
+dual_arch_packages="pkgconfig mesa-libGLU-devel mesa-libGL-devel glibc-devel zlib-devel \
+    libX11-devel libXrandr-devel libXmu-devel libXi-devel libXext-devel libXft-devel \
+    alsa-lib-devel pulseaudio-devel libXinerama-devel libuuid-devel"
+
+arch_packages=""
+for x in $dual_arch_packages; do
+    arch_packages="$arch_packages $x.i686 $x.x86_64"
+done
+
 mock -r $ROOT --install ccache dos2unix \
-    pkgconfig mesa-libGLU-devel \
-    libX11-devel libXrandr-devel libXmu-devel \
-    libXi-devel libXext-devel libXft-devel \
-    alsa-lib-devel freeglut-devel \
-    libtiff-devel curl-devel \
-    pulseaudio-libs-devel freetype-devel cmake $EXTRA \
-    libpng-devel libjpeg-devel zlib-devel fltk \
-    vim-enhanced libXinerama-devel libXpm-devel \
-    libuuid-devel \
+    ${arch_packages} \
+    RPMS/*.rpm $EXTRA \
+    vim-enhanced  \
     $*
+
